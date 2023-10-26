@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PK Result</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.1/css/all.min.css">
+
+    <!-- 引入 Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- 引入 Chart.js 的 datalabels 插件 -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
+    <style>
+
+        .title {
+    background-color: white;
+    height: 80px;
+        }
+           body {
+            background-color: #e8e6e6; /* 浅灰色 */
+        }
+        /* Navigation Bar styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+           
+        }
+        .separator {
+    border-top: 1px #e8e6e6;
+    margin: 10px 0;
+    padding: 0;
+}
+
+              /* Main container styles */
+    /*          .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; 
+          
+        }*/
+
+        
+.back-button {
+    background: none; /* 移除默认的背景 */
+    border: none;     /* 移除默认的边框 */
+    cursor: pointer;  /* 将鼠标指针设置为手形 */
+}
+
+.back-button img {
+    width: 20px;     
+    height: 20px;
+}
+
+
+/* Control the layout of the bar charts */
+.chart-main-container {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0;
+}
+
+/* Styling for individual chart containers */
+.chart {
+    flex: 1;
+    max-width: 48%;  /* Allows for a bit of space in between the charts */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chart canvas {
+    width: 100%;
+    margin-bottom: 10px;  /* Space between the chart and health index */
+}
+
+/* Styling for the health index display */
+.health-index-display {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-around; /* 平均分配项目的空间 */
+    align-items: center; /* 垂直居中项目 */
+    background-color: white; /* 底部导航栏的背景颜色 */
+    color: rgb(43, 38, 38); /* 文本颜色 */
+    height: 60px; /* 底部导航栏的高度 */
+ 
+}
+
+.nav-item {
+    text-align: center; /* 文本水平居中 */
+}
+
+.nav-item img {
+    width: 30px; /* 图片宽度 */
+    height: 30px; /* 图片高度 */
+}
+
+.nav-item p {
+    margin: 0; /* 去掉段落的默认上下边距 */
+}
+
+
+.image-buttons {
+    display: flex;
+    flex-direction: column; /* 使按钮垂直排列 */
+    align-items: center; /* 在左右方向上居中按钮 */
+    gap: 5px; /* 按钮之间的间距 */
+}
+
+.image-buttons button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative; /* 设置为相对定位以为内部的绝对定位元素提供参考 */
+    width: 150px; /* 与图片宽度匹配 */
+    height: 150px; /* 根据实际情况调整，与图片高度匹配 */
+}
+
+.image-buttons img {
+    max-width: 100%;
+    display: block;
+    vertical-align: middle; /* 使图片垂直居中 */
+}
+
+.image-buttons button > span { /* 为文字添加一个span容器 */
+    position: absolute; /* 绝对定位 */
+    top: 50%; /* 从顶部开始的位置为50% */
+    left: 50%; /* 从左边开始的位置为50% */
+    transform: translate(-50%, -50%); /* 通过translate使其完全居中 */
+    z-index: 1; /* 确保文字始终显示在图片的前面 */
+}
+
+
+.image-buttons button:active img {
+    transform: scale(0.9);
+}
+
+
+.feed {
+    width: 500px;
+    margin: 0 auto;
+}
+
+
+.heart-svg {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    cursor: pointer;
+}
+
+.heart-svg path {
+    transition: fill 0.3s ease;
+}
+
+.heart-svg:hover path,
+.heart-svg.liked path {
+    fill: red;
+}
+
+
+.post {
+    background-color: #ffffff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    display: block; /* 确保帖子是块级元素 */
+    position: relative; 
+}
+
+.comment-input, .like, .comment, .user-comment {
+    display: block;  /* 确保这些元素在新的行上 */
+    margin-top: 10px;
+}
+
+
+
+.like, .comment {
+    background-color: #1877F2;
+    color: #ffffff;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.like:hover, .comment:hover {
+    background-color: #0054c7;
+}
+
+
+/* ...  ... */
+
+.comment-input {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.user-comment {
+    margin-top: 10px;
+    background-color: #e6e6e6;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.imc{
+    height: 50px;
+    width: 50px;
+}
+
+     </style>
+     </head>
+     <body>
+        
+        <div class="main-container">
+            <div class="title">
+        <div class="navbar">
+            <button onclick="goBack()" class="back-button">
+                <img src="back.png" alt="Go Back">
+            </button>
+            <h2>PK Result</h2>
+            <div></div> <!-- Empty div for spacing -->
+        </div>
+        </div>
+    
+        <div class="separator">
+        </div>
+   
+        <div class="chart-main-container"> <!-- A new outer container to hold both chart containers -->
+            <div id="chartContainer1" class="chart">
+                <!-- 这里放置第一个柱状图 -->
+                <canvas id="barChart1"></canvas>
+                <div class="health-index-display" id="healthIndex1">Health Index: </div>
+            </div>
+        
+            <div id="chartContainer2" class="chart">
+                <!-- 这里放置第二个柱状图 -->
+                <canvas id="barChart2"></canvas>
+                <div class="health-index-display" id="healthIndex2">Health Index: </div>
+            </div>
+        </div>
+
+        <div class="image-buttons">
+            <button id="rematchButton"><img src="web-button.png" alt="rematch"><span>rematch</span></button>
+            <button id="detailButton"><img src="web-button.png" alt="detail"><span>detail</span></button>
+            <button id="rankingButton"><img src="web-button.png" alt="ranking"><span>ranking</span></button>
+        </div>
+
+        <div class="feed">
+
+
+            <div>
+                
+            </div>
+
+            <!-- Post 1 -->
+            <div class="post">
+                <p>Nice day！</p>   
+                <img src="St-Lucia-campus.jpg" style="width: 50%; height: auto;">
+                <svg class="heart-svg" viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.27 2 8.5C2 5.41 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5C22 12.27 18.6 15.36 13.45 20.04L12 21.35Z" fill="black"></path>
+                </svg>
+                
+                <button class="comment">💬 Comment</button>
+                <div class="comments-section">
+                   
+                </div>
+            </div>
+    
+            <!-- Post 2 -->
+            <div class="post">
+                <p>Hello everyone</p>
+                <img src="St-Lucia-campus.jpg" style="width: 50%; height: auto;">
+                <svg class="heart-svg" viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.27 2 8.5C2 5.41 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5C22 12.27 18.6 15.36 13.45 20.04L12 21.35Z" fill="black"></path>
+                </svg>
+                <button class="comment">💬 Comment</button>
+                <div class="comments-section">
+                </div>
+            </div>
+    
+            <!-- Post 3 -->
+            <div class="post">
+                <p>School day！</p>
+                <img src="St-Lucia-campus.jpg" style="width: 50%; height: auto;">
+                <svg class="heart-svg" viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.27 2 8.5C2 5.41 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5C22 12.27 18.6 15.36 13.45 20.04L12 21.35Z" fill="black"></path>
+                </svg>
+                <button class="comment">💬 Comment</button>
+                <div class="comments-section">
+                </div>
+            </div>
+    
+            <!-- Post 4 -->
+            <div class="post">
+                <p>Good day！</p>
+                <img src="St-Lucia-campus.jpg" style="width: 50%; height: auto;">
+                <svg class="heart-svg" viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.27 2 8.5C2 5.41 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5C22 12.27 18.6 15.36 13.45 20.04L12 21.35Z" fill="black"></path>
+                </svg>
+                <button class="comment">💬 Comment</button>
+                <div class="comments-section">
+                </div>
+            </div>
+    
+            <!-- Post 5 -->
+            <div class="post">
+                <p>Eat too much......</p>
+                <img src="St-Lucia-campus.jpg" style="width: 50%; height: auto;">
+                <svg class="heart-svg" viewBox="0 0 24 24" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 21.35L10.55 20.03C5.4 15.36 2 12.27 2 8.5C2 5.41 4.42 3 7.5 3C9.24 3 10.91 3.81 12 5.09C13.09 3.81 14.76 3 16.5 3C19.58 3 22 5.41 22 8.5C22 12.27 18.6 15.36 13.45 20.04L12 21.35Z" fill="black"></path>
+                </svg>
+                <button class="comment">💬 Comment</button>
+                <div class="comments-section">
+                </div>
+            </div>
+    
+        </div>
+
+
+        <div class="footer">
+            <div class="nav-item" onclick="navigateTo('home.html')">
+                <img src="home.png" alt="Image 1">
+                <p>Home</p>
+            </div>
+            <div class="nav-item" onclick="navigateTo('share.html')">
+                <img src="share.png" alt="Image 2">
+                <p>Share</p>
+            </div>
+            <div class="nav-item" onclick="navigateTo('me.html')">
+                <img src="user.png" alt="Image 3">
+                <p>Me</p>
+            </div>
+        </div>
+        
+
+    <script>
+
+function goBack() {
+        window.location.href = "pk.html"; // 使用JavaScript进行页面跳转
+    }
+      
+
+  // 默认数据
+  var defaultData = {
+            sleep: 100,
+            intake: 20,
+            healthindex:99,
+        };
+        // Update the displayed health index for default data
+document.getElementById("healthIndex1").textContent += defaultData.healthindex;
+
+        // 获取来自 pk.html 页面的数据
+        var urlParams = new URLSearchParams(window.location.search);
+        var jsonData = urlParams.get('data');
+        var selectedUserData = JSON.parse(jsonData);
+
+        // 提取接收的数据中的 sleep 和 intake
+        var friendSleep = selectedUserData.sleepData;
+        var friendIntake = selectedUserData.intakeData;
+        
+        // Extract and display the health index from the received data
+var friendHealthIndex = selectedUserData.healthindex;
+document.getElementById("healthIndex2").textContent += friendHealthIndex;
+
+
+        // 创建第一个柱状图的数据，用于显示默认数据
+        var chartData1 = {
+            labels: ['Sleep', 'Intake'], // 标签
+            datasets: [{
+                label: 'Default Data',
+                data: [defaultData.sleep, defaultData.intake], // 默认数据
+                backgroundColor: ['blue', 'green'], // 默认数据柱状图颜色
+                barThickness: 20, // 设置柱状图的粗细，单位是像素
+            }],
+        };
+
+        // 创建第二个柱状图的数据，用于显示来自 "pk.html" 的数据
+        var chartData2 = {
+            labels: ['Sleep', 'Intake'], // 标签
+            datasets: [{
+                label: 'Friend Data',
+                data: [friendSleep, friendIntake], // 朋友数据
+                backgroundColor: ['red', 'orange'], // 朋友数据柱状图颜色
+                barThickness: 20, // 设置柱状图的粗细，单位是像素
+            }],
+        };
+
+        // 获取第一个柱状图的 Canvas 元素
+        var ctx1 = document.getElementById('barChart1').getContext('2d');
+
+        // 创建第一个柱状图
+        var barChart1 = new Chart(ctx1, {
+            type: 'bar',
+            data: chartData1,
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // 获取第二个柱状图的 Canvas 元素
+        var ctx2 = document.getElementById('barChart2').getContext('2d');
+
+        // 创建第二个柱状图
+        var barChart2 = new Chart(ctx2, {
+            type: 'bar',
+            data: chartData2,
+            options: {
+                scales: {
+                    x: {
+                        beginAtZero: true
+                    },
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        document.getElementById('rematchButton').addEventListener('click', function() {
+    window.location.href = "pk.html";
+});
+document.getElementById('rankingButton').addEventListener('click', function() {
+    window.location.href = "ranking.html";
+});
+document.getElementById('detailButton').addEventListener('click', function() {
+    window.location.href = "detail.html";
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    // 获取所有的评论按钮
+    let commentButtons = document.querySelectorAll(".comment");
+
+    commentButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+            let post = this.closest(".post");
+            let commentsSection = post.querySelector(".comments-section");
+            let input = commentsSection.querySelector(".comment-input");
+
+            // 如果输入框已经存在，那么删除它
+            if (input) {
+                commentsSection.removeChild(input);
+                return;
+            }
+
+            // 创建一个输入框供用户输入评论
+            input = document.createElement("input");
+            input.type = "text";
+            input.placeholder = "输入你的评论...";
+            input.className = "comment-input";
+            commentsSection.appendChild(input);
+            input.focus();
+
+            // 当用户按下回车键，显示评论
+            input.addEventListener("keydown", function(event) {
+                if (event.key === "Enter") {
+                    let commentText = event.target.value;
+                    let commentDiv = document.createElement("div");
+                    commentDiv.className = "user-comment";
+                    commentDiv.textContent = commentText;
+                    commentsSection.appendChild(commentDiv);
+
+                    // 删除输入框
+                    commentsSection.removeChild(event.target);
+                }
+            });
+        });
+    });
+});
+
+
+document.addEventListener("DOMContentLoaded", function() {
+    let heartSVG = document.querySelector(".heart-svg");
+    
+    heartSVG.addEventListener("click", function() {
+        this.classList.toggle("liked");
+    });
+});
+
+
+
+     </script>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .title {
+    background-color: white;
+    height: 80px;
+        }
+           body {
+            background-color: #e8e6e6; /* 浅灰色 */
+        }
+        /* Navigation Bar styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+           
+        }
+        .back-button {
+    background: none; /* 移除默认的背景 */
+    border: none;     /* 移除默认的边框 */
+    cursor: pointer;  /* 将鼠标指针设置为手形 */
+}
+
+.back-button img {
+    width: 20px;     
+    height: 20px;
+}
+
+
+        .footer {
+    display: flex;
+    justify-content: space-around; /* 平均分配项目的空间 */
+    align-items: center; /* 垂直居中项目 */
+    background-color: white; /* 底部导航栏的背景颜色 */
+    color: rgb(43, 38, 38); /* 文本颜色 */
+    height: 60px; /* 底部导航栏的高度 */
+}
+
+.nav-item {
+    text-align: center; /* 文本水平居中 */
+}
+
+.nav-item img {
+    width: 30px; /* 图片宽度 */
+    height: 30px; /* 图片高度 */
+}
+
+.nav-item p {
+    margin: 0; /* 去掉段落的默认上下边距 */
+}
+
+.chart-container {
+    position: relative; 
+    display: flex;
+    justify-content: center; /* 水平居中 */
+    align-items: center;     /* 垂直居中 */
+    height: 100vh;           /* 使容器占满整个视窗高度 */
+}
+
+    #myChart {
+    width: 500px !important;
+    height: 300px !important;
+    display: block;
+    margin: 0 auto; /* 这会使Canvas元素在其容器中居中 */
+}
+
+.dropdown-container {
+    position: absolute; /* 使用绝对定位 */
+    top: 10px;          /* 从顶部偏移10像素 */
+    left: 10px;         /* 从左侧偏移10像素 */
+    z-index: 10;        /* 确保在canvas之上 */
+}
+
+#timeFrame {
+    padding: 5px 10px;
+    font-size: 16px;
+    background-color: white; /* 设置背景颜色以确保在canvas上清晰可见 */
+}
+
+</style>
+</head>
+<body>
+
+    <div class="main-container">
+        <div class="title">
+    <div class="navbar">
+        <button onclick="goBack()" class="back-button">
+            <img src="back.png" alt="Go Back">
+        </button>
+        <h2>Diet with Friend</h2>
+        <div></div> <!-- Empty div for spacing -->
+    </div>
+    </div>
+
+    <div class="separator">
+    </div>
+
+    <div class="chart-container">
+        <div class="dropdown-container">
+            <select id="timeFrame">
+                <option value="weekly">Weekly</option>
+                <option value="daily">Daily</option>
+                <option value="monthly">Monthly</option>
+            </select>
+        </div>
+ 
+        <canvas id="myChart"></canvas>
+    </div>
+    <script src="script.js"></script>
+    
+
+    <div class="footer">
+        <div class="nav-item" onclick="navigateTo('home.html')">
+            <img src="home.png" alt="Image 1">
+            <p>Home</p>
+        </div>
+        <div class="nav-item" onclick="navigateTo('share.html')">
+            <img src="share.png" alt="Image 2">
+            <p>Share</p>
+        </div>
+        <div class="nav-item" onclick="navigateTo('me.html')">
+            <img src="user.png" alt="Image 3">
+            <p>Me</p>
+        </div>
+    </div>
+</body>
+<script>
+  window.onload = function() {
+    const ctx = document.getElementById('myChart').getContext('2d');
+
+    // Function to generate random data
+    const randomData = (length) => Array.from({length}, () => Math.floor(Math.random() * 101));
+
+    const data = {
+        labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'], // One week
+        datasets: [{
+            label: 'Me',
+            borderColor: 'black',
+            data: randomData(7),
+            fill: false
+        }, {
+            label: 'Friend',
+            borderColor: 'grey',
+            data: randomData(7),
+            fill: false
+        }]
+    };
+
+    const config = {
+        type: 'line',
+        data: data,
+        options: {
+            scales: {
+                y: {
+                    min: 0,  // Minimum value for Y-axis
+                    max: 100 // Maximum value for Y-axis
+                }
+            }
+        }
+    };
+
+    new Chart(ctx, config);
+}
+
+    function goBack() {
+        window.history.back();
+    }
+
+
+    let chart; // 全局变量来存储图表实例
+
+document.addEventListener('DOMContentLoaded', function() {
+    const timeFrameSelect = document.getElementById('timeFrame');
+    timeFrameSelect.addEventListener('change', function() {
+        updateChart(timeFrameSelect.value); 
+    });
+
+    updateChart('weekly'); // 初始化为周视图
+});
+
+function generateRandomData(length) {
+    return Array.from({ length }, () => Math.floor(Math.random() * 101));
+}
+
+function updateChart(timeFrame) {
+    const ctx = document.getElementById('myChart').getContext('2d');
+
+    let labels = [];
+    let dataLength;
+
+    switch(timeFrame) {
+        case 'daily':
+            labels = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+            dataLength = 24;
+            break;
+        case 'monthly':
+            labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            dataLength = 12;
+            break;
+        default:
+            labels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dataLength = 7;
+    }
+
+    const meData = generateRandomData(dataLength);
+    const friendData = generateRandomData(dataLength);
+
+    if (chart) {
+        chart.destroy(); // 销毁前一个图表实例
+    }
+
+    chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Me',
+                borderColor: 'black',
+                data: meData,
+                fill: false
+            }, {
+                label: 'Friend',
+                borderColor: 'grey',
+                data: friendData,
+                fill: false
+            }]
+        }
+    });
+}
+
+
+// document.addEventListener('DOMContentLoaded', function() {
+//     const timeFrameSelect = document.getElementById('timeFrame');
+//     timeFrameSelect.addEventListener('change', function() {
+//         updateChart(timeFrameSelect.value); 
+//     });
+
+//     const currentSelection = timeFrameSelect.value; // 获取当前选择
+//     updateChart(currentSelection); // 初始化为当前选择的视图
+// });
+
+
+
+</script>
+</html>

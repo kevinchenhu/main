@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranking</title>
+    <style>
+        .title {
+    background-color: white;
+    height: 80px;
+        }
+           body {
+            background-color: #e8e6e6; /* 浅灰色 */
+        }
+        /* Navigation Bar styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+           
+        }
+        .back-button {
+    background: none; /* 移除默认的背景 */
+    border: none;     /* 移除默认的边框 */
+    cursor: pointer;  /* 将鼠标指针设置为手形 */
+}
+
+.back-button img {
+    width: 20px;     
+    height: 20px;
+}
+
+
+        .footer {
+    display: flex;
+    justify-content: space-around; /* 平均分配项目的空间 */
+    align-items: center; /* 垂直居中项目 */
+    background-color: white; /* 底部导航栏的背景颜色 */
+    color: rgb(43, 38, 38); /* 文本颜色 */
+    height: 60px; /* 底部导航栏的高度 */
+}
+
+.nav-item {
+    text-align: center; /* 文本水平居中 */
+}
+
+.nav-item img {
+    width: 30px; /* 图片宽度 */
+    height: 30px; /* 图片高度 */
+}
+
+.nav-item p {
+    margin: 0; /* 去掉段落的默认上下边距 */
+}
+
+.ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+}
+
+thead {
+    background-color: #f2f2f2;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.buttons-container {
+    display: flex;          /* 使用flex布局 */
+    justify-content: center; /* 水平居中 */
+    gap: 0;                 /* 确保按钮之间没有间距 */
+    margin: 10px 0;         /* 给容器添加一些上下外边距，使其与其他元素之间有些距离 */
+}
+
+.custom-button {
+    border: none;           /* 移除边框 */
+    background-color: #c9d0d5; /* 按钮背景颜色 */
+    color: white;           /* 按钮文字颜色 */
+    padding: 10px 20px;     /* 按钮内边距 */
+    cursor: pointer;        /* 当鼠标悬停时显示手指图标 */
+    font-size: 16px;        /* 设置字体大小 */
+    transition: background-color 0.3s; /* 平滑的背景颜色过渡效果 */
+}
+
+.custom-button:hover {
+    background-color: #2980b9; /* 按钮悬停背景颜色 */
+}
+
+        </style>
+
+<body>
+    <div class="main-container">
+        <div class="title">
+    <div class="navbar">
+        <button onclick="goBack()" class="back-button">
+            <img src="back.png" alt="Go Back">
+        </button>
+        <h2>Ranking</h2>
+        <div></div> <!-- Empty div for spacing -->
+    </div>
+    </div>
+
+    <div class="separator">
+    </div>
+
+    <div class="buttons-container">
+        <button id="dailyBtn" class="custom-button">Daily</button>
+        <button id="weeklyBtn" class="custom-button">Weekly</button>
+        
+    </div>
+    
+
+
+    <table class="ranking-table">
+        <thead>
+            <tr>
+                <th>Ranking</th>
+                <th>Icon</th>
+                <th>Name</th>
+                <th>HealthIndex</th>
+                <th>Thumbs Up</th>
+            </tr>
+        </thead>
+        <tbody id="rankingBody">
+            <!-- Data will be populated here via JavaScript -->
+        </tbody>
+    </table>
+    
+    <div class="footer">
+        <div class="nav-item" onclick="navigateTo('home.html')">
+            <img src="home.png" alt="Image 1">
+            <p>Home</p>
+        </div>
+        <div class="nav-item" onclick="navigateTo('share.html')">
+            <img src="share.png" alt="Image 2">
+            <p>Share</p>
+        </div>
+        <div class="nav-item" onclick="navigateTo('me.html')">
+            <img src="user.png" alt="Image 3">
+            <p>Me</p>
+        </div>
+    </div>
+    
+    </body>
+
+    <script>
+//         document.addEventListener('DOMContentLoaded', function() {
+//     setInterval(populateData, 3000); // Refresh every 3 seconds
+//     populateData(); // Initial population
+// });
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // setInterval(populateData, 3000); // Refresh every 3 seconds
+    populateData(); // Initial population
+});
+
+function shuffleArray(array) {
+    let shuffled = array.slice(); // 创建数组的一个浅拷贝
+    for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]; // 交换元素
+    }
+    return shuffled; // 返回打乱顺序后的新数组
+}
+
+function populateData() {
+    const originalNames = ['Alice', 'Bob', 'Charlie', 'David', 'Eva', 'Frank', 'Grace', 'Hannah', 'Isaac', 'Jack'];
+    const shuffledNames = shuffleArray(originalNames); // 获取随机排序的名字
+    const tbody = document.getElementById('rankingBody');
+    tbody.innerHTML = ''; // Clear existing rows
+
+    for (let i = 0; i < 10; i++) {
+        const healthIndex = Math.floor(Math.random() * 101);
+        const heartNumber = Math.floor(Math.random() * 101); // Generate a random number for the heart
+        
+        // Generate a random avatar index between 0 and 9
+        const avatarIndex = Math.floor(Math.random() * 10); 
+        
+        tbody.innerHTML += `
+            <tr>
+                <td>${i + 1}</td>
+                <td><img src="avatars/avatar${avatarIndex}.png" class="avatar"></td>
+                <td>${shuffledNames[i]}</td>
+                <td>${healthIndex}</td>
+                <td>
+                  ❤️<br>
+                  ${heartNumber} <!-- Display the random number below the heart -->
+                </td>
+            </tr>
+        `;
+    }
+}
+
+document.getElementById('dailyBtn').addEventListener('click', populateData);
+document.getElementById('weeklyBtn').addEventListener('click', populateData);
+
+
+
+    function goBack() {
+        window.location.href = 'comparison.html';
+    }
+
+
+
+
+    </script>
+
+    </html>

@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PK Setting</title>
+    <style>
+        .title {
+    background-color: white;
+    height: 80px;
+        }
+           body {
+            background-color: #e8e6e6; /* 浅灰色 */
+        }
+        /* Navigation Bar styles */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+           
+        }
+              /* Main container styles */
+    /*          .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; 
+          
+        }*/
+        .bclist{
+            background-color: #b1dab0;
+            border-radius: 10px;
+
+        }
+
+
+        .btw{
+            background-color: white;
+            border-radius: 20px;
+            margin: 10px;
+
+        }
+
+        /* Toggle styles */
+        .toggle {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%; 
+            height: 50px;
+
+  
+        }
+
+ 
+
+        .toggle span {
+            margin: 0 10px;
+            margin-right: 20px; /* 为右边增加外边距 */
+            margin-left: 20px;
+        }
+
+        .left-container,
+.right-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    font-weight: bold;
+}
+
+.left-container {
+    order: 1; /* 设置"Friends"在最左边 */
+}
+
+.right-container {
+    order: 3; /* 设置"Stranger"在最右边 */
+}
+
+
+
+
+        /* Person styles */
+        .person {
+            display: flex;
+            align-items: center;
+         
+            justify-content: flex-start; 
+            position: relative; 
+            height: 50px;
+        }
+
+        .person img {
+            border-radius: 50%;
+            margin-right: 10px;
+            margin-left: 20px;
+            width: 30px;  /* Set the desired width */
+            height: 30px; /* Set the desired height */
+            background-color: white;
+            order: -1; /* 将图片移动到最左边 */
+
+        }
+
+   
+        .person .friend-radio {
+    display: inline-block;
+    position: absolute; /* Use absolute positioning */
+    right: 0;           /* Align to the right */
+    top: calc(50% - 5px);          /* Center it vertically */
+    transform: translateY(-50%); /* Vertically center the element */
+    margin-left: 10px;  /* 添加一些间距以与文本分隔开 */
+    width: 20px;        /* 设置单选按钮的宽度 */
+    height: 20px;       /* 设置单选按钮的高度，使其变成正方形 */
+    appearance: none;   /* 隐藏默认外观 */
+    right: 20px;
+
+}
+
+/* Customize the appearance of the custom radio button */
+.person .friend-radio::before {
+    content: "";        /* 创建伪元素 */
+    display: inline-block;
+    width: 100%;
+    height: 100%;
+    background-color: lightgray;  /* Background color when not selected */
+    border: 2px solid #ccc;       /* Border for the custom radio button */
+    border-radius: 0%;            /* 使它变成正方形 */
+    background-color: lightgray;
+}
+
+/* Custom radio button design when selected */
+.person .friend-radio:checked::before {
+    background-color: lightgray;
+    border-color: #ccc;
+}
+
+.person .friend-radio:checked::after {
+    content: "✓";  /* 使用对勾字符 */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-40%, -60%);  /* 使对勾居中 */
+    color: #58c27d;  /* 对勾的颜色 */
+    font-size: 40px;  /* 调整对勾的大小 */
+    font-weight: bold;  /* 使对勾更加粗矮 */
+}
+
+
+
+
+
+        .hidden {
+            display: none;
+        }
+
+        /* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 90px;
+    height: 25px;
+    order: 2; /* 保持滑块在中间位置 */
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color:gray;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked + .slider {
+    background-color: #58c27d;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+     /* PK Button container styles */
+     .pk-button-container {
+            display: flex;
+            justify-content: center; /* 水平居中 */
+            align-items: center;
+            
+        }
+  /* PK Button styles */
+  .pk-button {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color:#b1dab0;
+            color: #fff;
+            font-size: 40px;
+            border: none;
+            box-shadow: 0px 4px 8px rgba(10, 10, 10, 0.5);
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            font-weight: bold;
+}
+            
+    
+
+        .pk-button:hover {
+    background-color: #45a049;
+    transform: scale(1.05);
+}
+.center-container {
+    display: flex;
+    justify-content: center;  // 水平居中
+    align-items: center;      // 垂直居中
+    height: 100%; 
+}
+
+    #showMoreBtn {
+    width: 50px;
+    height: 50px;
+}
+
+.separator {
+    border-top: 1px #e8e6e6;
+    margin: 10px 0;
+    padding: 0;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-around; /* 平均分配项目的空间 */
+    align-items: center; /* 垂直居中项目 */
+    background-color: white; /* 底部导航栏的背景颜色 */
+    color: rgb(43, 38, 38); /* 文本颜色 */
+    height: 60px; /* 底部导航栏的高度 */
+}
+
+.nav-item {
+    text-align: center; /* 文本水平居中 */
+}
+
+.nav-item img {
+    width: 30px; /* 图片宽度 */
+    height: 30px; /* 图片高度 */
+}
+
+.nav-item p {
+    margin: 0; /* 去掉段落的默认上下边距 */
+}
+
+.square {
+    width: 5px;  /* 正方形的大小，根据需要调整 */
+    height: 25px;
+    display: inline-block;  /* 使其与其它元素在同一行 */
+    margin-right: 10px;
+}
+
+
+.back-button {
+    background: none; /* 移除默认的背景 */
+    border: none;     /* 移除默认的边框 */
+    cursor: pointer;  /* 将鼠标指针设置为手形 */
+}
+
+.back-button img {
+    width: 20px;     
+    height: 20px;
+}
+
+
+
+
+
+
+    </style>
+        <script>
+            function redirectToComparison() {
+                window.location.href = "comparison.html";
+            }
+        </script>
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="title">
+    <div class="navbar">
+        <button onclick="goBack()" class="back-button">
+            <img src="back.png" alt="Go Back">
+        </button>
+        <h2>PK Setting</h2>
+        <div></div> <!-- Empty div for spacing -->
+    </div>
+    </div>
+
+    <div class="separator">
+    </div>
+
+    <div class="btw">
+        <div class="toggle">   
+            <div class="left-container">
+            <span>Same Sex</span>
+            </div>
+            <label class="switch">
+                <input type="checkbox" id="sameSexSwitch" onchange="filterGender()">
+                <span class="slider round"></span>
+            </label>
+            <div class="right-container">
+            <span>Opposite Sex</span>
+            </div>
+        </div>
+        </div>
+        <div class="btw">
+            <div class="toggle">
+                <div class="left-container">
+                <span>Daily Intake</span>
+                </div>
+                <label class="switch">
+                    <input type="checkbox">
+                    <span class="slider round"></span>
+                </label>
+                <div class="right-container">
+                <span>Weekly Intake</span>
+                </div>
+            </div>
+            </div>
+        </div>
+        
+
+    
+    
+
+<div class="bclist"> 
+    <div class="toggle">
+        <div class="left-container">
+            <span>Friends</span>
+        </div>
+        <label class="switch">
+            <input type="checkbox" checked id="toggleSwitch" onchange="toggleView()">
+            <span class="slider round"></span>
+        </label>
+        <div class="right-container">
+            <span>Stranger</span>
+        </div>
+    </div>
+
+  
+
+    <div id="friendsList">
+        <div class="btw">
+        <div class="person" data-gender="male" data-intake=" 100" data-sleep="100 " data-healthindex="80">
+            <img src="candy-corn.png" alt="Friend 1">  
+            <div class="square"></div> 
+            <span>Friend 1</span>
+            <input type="radio" name="friend" class="friend-radio">
+            <div class="status"></div>  <!-- 新增的元素 -->
+        </div>
+        </div>
+        <div class="btw">
+        <div class="person" data-gender="female" data-intake=" 600" data-sleep="70 " data-healthindex="70">
+            <img src="coffin.png" alt="Friend 2">
+            <div class="square"></div> 
+            <span>Friend 2</span>
+            <input type="radio" name="friend" class="friend-radio">
+            <div class="status"></div>  <!-- 新增的元素 -->
+        </div>
+        </div>
+        <div class="btw">
+        <div class="person" data-gender="male" data-intake=" 30" data-sleep="100 " data-healthindex="68"> 
+            <img src="mummy.png" alt="Friend 3">
+            <div class="square"></div> 
+            <span>Friend 3</span>
+            <input type="radio" name="friend" class="friend-radio">
+            <label class="radio-label"></label>
+            <div class="status"></div>  <!-- 新增的元素 -->
+        </div>
+        </div>
+        <!-- Initially hidden friends -->
+        <div class="btw">
+        <div class="person hidden" data-gender="female" data-intake=" 70" data-sleep="70 " data-healthindex="66">
+            <img src="pumpkin.png" alt="Friend 4">
+            <div class="square"></div> 
+            <span>Friend 4</span>
+            <input type="radio" name="friend" class="friend-radio">
+            <div class="status"></div>  <!-- 新增的元素 -->
+        </div>
+        </div>
+        <div class="btw">
+        <div class="person hidden" data-gender="male" data-intake=" 80" data-sleep="100 " data-healthindex="57">
+            <img src="vampire.png" alt="Friend 5">
+            <div class="square"></div> 
+            <span>Friend 5</span>
+            <input type="radio" name="friend" class="friend-radio">
+            <div class="status"></div>  <!-- 新增的元素 -->
+        </div>
+        </div>
+        <div class="btw">
+        <div class="person hidden" data-gender="female" data-intake=" 50" data-sleep="50 " data-healthindex="23">
+            <img src="vampire.png" alt="Friend 6">
+            <div class="square"></div> 
+            <span>Friend 6</span>
+            <input type="radio" name="friend" class="friend-radio">
+            <div class="status"></div>  <!-- 新增的元素 -->
+        </div>
+        </div>
+        <div class="btw">
+        <div class="person hidden" data-gender="male" data-intake=" 800" data-sleep="100 " data-healthindex="80">
+            <img src="ghost.png" alt="Friend 7">
+            <div class="square"></div> 
+            <span>Friend 7</span>
+            <input type="radio" name="friend" class="friend-radio">
+            <div class="status"></div>  <!-- 新增的元素 -->
+        </div>
+        </div>
+    </div>
+    <div id="strangersList" class="hidden">
+        <div class="btw">
+        <div class="person" data-gender="male" data-intake=" 500" data-sleep="80 " data-healthindex="77">
+            <img src="candy-bag.png" alt="Stranger 1">
+            <div class="square"></div> 
+            <span>Stranger 1</span>
+            <input type="radio" name="friend" class="friend-radio">
+            <div class="status"></div>  <!-- 新增的元素 -->
+        </div>
+        </div>
+        <div class="btw">
+        <div class="person" data-gender="female" data-intake=" 100" data-sleep="100 " data-healthindex="56">
+            <img src="skull.png" alt="Stranger 2">
+            <div class="square"></div> 
+            <span>Stranger 2</span>
+            <input type="radio" name="friend" class="friend-radio">
+            <div class="status"></div>  <!-- 新增的元素 -->
+        </div>
+        </div>
+        <div class="btw">
+        <div class="person" data-gender="male" data-intake=" 80" data-sleep="60 " data-healthindex="98">
+            <img src="trident.png" alt="Stranger 3">
+            <div class="square"></div> 
+            <span>Stranger 3</span>
+            <input type="radio" name="friend" class="friend-radio">
+            <div class="status"></div>  <!-- 新增的元素 -->
+        </div>
+        </div>
+        <!-- Initially hidden strangers -->
+        <div class="btw">
+        <div class="person hidden" data-gender="female" data-intake=" 80" data-sleep="100 " data-healthindex="67">
+            <img src="bat.png" alt="Stranger 4">
+            <div class="square"></div> 
+            <span>Stranger 4</span>
+            <input type="radio" name="friend" class="friend-radio">
+            <div class="status"></div>  <!-- 新增的元素 -->
+        </div>
+        </div>
+        <div class="btw">
+        <div class="person hidden" data-gender="male" data-intake=" 60" data-sleep="50 " data-healthindex="88">
+            <img src="spider.png" alt="Stranger 5">
+            <div class="square"></div> 
+            <span>Stranger 5</span>
+            <input type="radio" name="friend" class="friend-radio">
+            <div class="status"></div>  <!-- 新增的元素 -->
+        </div>
+        </div>
+        <div class="btw">
+        <div class="person hidden" data-gender="female"  data-intake=" 70" data-sleep="90 "data-healthindex="90">
+            <img src="witch-broom.png" alt="Stranger 6">
+            <div class="square"></div> 
+            <span>Stranger 6</span>
+            <input type="radio" name="friend" class="friend-radio">
+            <div class="status"></div>  <!-- 新增的元素 -->
+        </div>
+        </div>
+      
+       </div>
+    
+
+       <div class="center-container">
+        <img src="down-arrow.png" alt="Show More" id="showMoreBtn" onclick="toggleExtra()" style="cursor:pointer;">
+    </div>
+</div>
+
+    
+      <!-- PK Button Container -->
+      <div class="pk-button-container">
+        <!-- PK Button -->
+        <button id="pkButton" class="pk-button" onclick="redirectToComparison()">
+            <span style="color: white;">P</span><span style="color:red;">K</span>
+        </button>
+    </div>
+
+
+    <div class="footer">
+        <div class="nav-item" onclick="navigateTo('home.html')">
+            <img src="home.png" alt="Image 1">
+            <p>Home</p>
+        </div>
+        <div class="nav-item" onclick="navigateTo('share.html')">
+            <img src="share.png" alt="Image 2">
+            <p>Share</p>
+        </div>
+        <div class="nav-item" onclick="navigateTo('me.html')">
+            <img src="user.png" alt="Image 3">
+            <p>Me</p>
+        </div>
+    </div>
+    
+    <script>
+        function navigateTo(url) {
+            window.location.href = url; // 使用JavaScript来进行页面导航
+        }
+    </script>
+    
+ 
+
+<!-- ... -->
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+
+    function toggleView() {
+        var friends = document.getElementById("friendsList");
+        var strangers = document.getElementById("strangersList");
+        if (document.getElementById("toggleSwitch").checked) {
+            friends.style.display = "block";
+            strangers.style.display = "none";
+        } else {
+            friends.style.display = "none";
+            strangers.style.display = "block";
+        }
+    }
+
+    function toggleExtra() {
+    var list, hiddenElements, toggleButton;
+    
+    if (document.getElementById("toggleSwitch").checked) {
+        list = document.getElementById("friendsList");
+    } else {
+        list = document.getElementById("strangersList");
+    }
+    
+    hiddenElements = list.querySelectorAll(".hidden");
+    toggleButton = document.getElementById("showMoreBtn");  
+    
+    if (hiddenElements[0].style.display === "none" || hiddenElements[0].style.display === "") {
+        hiddenElements.forEach(el => el.style.display = "flex");
+        toggleButton.src = "up-arrows.png"; 
+    } else {
+        hiddenElements.forEach(el => el.style.display = "none");
+        toggleButton.src = "down-arrow.png"; 
+    }
+}
+
+
+
+function filterGender() {
+    const friendsList = document.querySelectorAll("#friendsList .person");
+    const strangersList = document.querySelectorAll("#strangersList .person");
+    const isSameSex = document.getElementById("sameSexSwitch").checked;
+
+    // Based on the user's gender, determine the gender to display
+    // For this example, I assume the user is male.
+    // You can modify this accordingly or use another method to determine the user's gender
+    const userGender = "male";
+    const genderToShow = isSameSex ? userGender : (userGender === "male" ? "female" : "male");
+
+    [...friendsList, ...strangersList].forEach(person => {
+        if (person.dataset.gender === genderToShow) {
+            person.style.display = "flex";
+        } else {
+            person.style.display = "none";
+        }
+    });
+}
+
+// Initial filtering on page load
+filterGender();
+
+    // 存储所选用户数据的数组
+    const selectedUsers = [];
+
+    // 选择用户并添加到 selectedUsers
+    function selectUser(checkbox) {
+        const person = checkbox.closest(".person");
+        const userData = {
+            username: person.getAttribute("data-username"),
+            intake: parseFloat(person.getAttribute("data-intake")),
+            sleep: parseFloat(person.getAttribute("data-sleep"))
+        };
+        if (checkbox.checked) {
+            selectedUsers.push(userData);
+        } else {
+            const index = selectedUsers.findIndex(user => user.username === userData.username);
+            if (index !== -1) {
+                selectedUsers.splice(index, 1);
+            }
+        }
+    }
+
+    // 点击 PK 按钮时，将 selectedUsers 转换为 JSON 并传递到 comparison.html
+    function compareUsers() {
+        const selectedUsersJSON = JSON.stringify(selectedUsers);
+        // 修改这里，将 selectedUsersJSON 作为 URL 参数传递到 comparison.html
+        window.location.href = `comparison.html?users=${encodeURIComponent(selectedUsersJSON)}`;
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+    var squares = document.querySelectorAll(".square");
+
+    squares.forEach(function(square) {
+        // 获取随机数0或1
+        var randomColor = Math.floor(Math.random() * 2);
+
+        // 获取与当前 square 相关联的 status 元素
+        var status = square.parentElement.querySelector(".status");
+
+        // 根据随机数设置颜色
+        if(randomColor === 0) {
+            square.style.backgroundColor = "lightgreen";
+            status.textContent = "now";  // 设置文本为 "now"
+            status.style.color = "lightgreen";  // 设置文本颜色为浅绿色
+        } else {
+            square.style.backgroundColor = "gray";
+            status.textContent = "off";  // 设置文本为 "off"
+            status.style.color = "gray";  // 设置文本颜色为灰色
+        }
+    });
+});
+
+
+
+  
+// JavaScript 代码，用于获取所选的单选按钮并提取相关数据
+function redirectToComparison() {
+    var selectedRadioButton = document.querySelector('input[name="friend"]:checked');
+
+    if (selectedRadioButton) {
+        // 获取所选单选按钮所在的父元素，即朋友元素
+        var friendElement = selectedRadioButton.closest('.person');
+
+        // 从朋友元素中提取 intake 和 sleep 数据
+        var intake = friendElement.getAttribute('data-intake');
+        var sleep = friendElement.getAttribute('data-sleep');
+        var healthIndex = friendElement.getAttribute('data-healthindex'); 
+        var friendName = friendElement.querySelector('span').textContent;
+ 
+
+
+        // 创建一个对象来存储所选用户的数据
+        var selectedUserData = {
+            friendName: friendName,
+            intakeData: intake,
+            sleepData: sleep,
+            healthindex: healthIndex 
+
+        };
+
+        // 将选定的数据作为参数附加到 comparison.html 的 URL 上
+        var url = "comparison.html?data=" + encodeURIComponent(JSON.stringify(selectedUserData));  // Used encodeURIComponent for better URL encoding
+
+        // 导航到 comparison.html
+        window.location.href = url;
+    } else {
+        alert("请选择一个朋友进行比较。");
+    }
+}
+
+
+
+    </script>
+</body>
+
+</html>
